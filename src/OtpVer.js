@@ -10,13 +10,37 @@ class OtpVer extends Component {
         loggedIn: false,
         visOne: true,
         visTwo: false,
+        visThree: false,
+        phonenumber: '',
+        username: ''
+    }
+
+    NumberInput = (val) => {
+        this.setState({
+            phonenumber: val
+        }
+            // ,()=>{console.log(this.state);}
+        )
     }
 
     handleClick = (e) => {
-        var butt = document.getElementById('otp-button');
-        butt.style.display = "none";
-        var inp = document.getElementById('otp-input');
-        inp.style.display = "block";
+        var { phonenumber } = this.state;
+        console.log(phonenumber.length);
+        if (phonenumber.length < 10 && phonenumber.length > 10) {
+            this.setState({
+                errorr: !this.state.errorr
+            })
+        }
+        else {
+            this.setState({
+                errorr: true,
+                visOne: false,
+            }, () => {
+                this.setState({
+                    visThree: true
+                })
+            })
+        }
     }
 
 
@@ -33,6 +57,7 @@ class OtpVer extends Component {
 
     handleSubmit = () => {
         var { otp } = this.state;
+        console.log(otp);
         if (otp !== '0000') {
             this.setState({
                 errorr: false
@@ -42,7 +67,7 @@ class OtpVer extends Component {
             this.setState({
                 errorr: true,
                 loggedIn: true,
-                visOne: false,
+                visThree: false,
             }, () => {
                 this.setState({
                     visTwo: true
@@ -50,16 +75,32 @@ class OtpVer extends Component {
             })
         }
     }
+
+    ChangeNumber = (e) => {
+        this.setState({
+            visThree: !this.state.visThree
+        }, () => {
+            this.setState({
+                visOne: !this.state.visOne
+            })
+        })
+    }
+
+    UserName = (e) =>{
+        this.setState({
+            username : e.target.value
+        })
+    }
+
     render() {
-        const { errorr, loggedIn, visOne, visTwo } = this.state
+        const { errorr, loggedIn, visOne, visTwo, visThree, phonenumber } = this.state
 
         return (
             <div><Router>
                 <Transition.Group animation="fly right" duration="500">
                     {visOne && (
                         <Container id="cont">
-
-                            <Form id="myForm">
+                            <Form id="myForm" >
                                 <Form.Group widths='equal'>
                                     <Form.Field
                                         label="Enter your mobile number"
@@ -68,9 +109,15 @@ class OtpVer extends Component {
                                         pattern="[0-9]{10}"
                                         placeholder='Mobile Number'
                                         control={Input}
+                                        title="Only 10 Digits are to be entered"
+                                        onInput={(e) => { this.NumberInput(e.target.value) }}
                                     />
                                 </Form.Group>
-                                <Button as={Link} color='twitter' animated='fade' width={8} fluid id="otp-button" style={{ display: "block" }} onClick={this.handleClick}>
+                                <Message negative hidden={errorr}
+                                    header="Error!"
+                                    content="Mobile Number must contain 10 digits. Please check and try again"
+                                />
+                                <Button color='twitter' animated='fade' width={8} fluid id="otp-button" style={{ display: "block" }} onClick={(e) => this.handleClick(e)}>
                                     <Button.Content visible>
                                         <Icon name='arrow right'>
                                         </Icon>
@@ -79,34 +126,46 @@ class OtpVer extends Component {
                                         Get OTP
                         </Button.Content>
                                 </Button>
-                                <div id="otp-input" style={{ display: "none" }}>
-                                    <Form.Group widths='equal'>
-                                        <Form.Field
-                                            label="Enter OTP"
-                                            placeholder='Enter OTP'
-                                            type="text"
-                                            pattern="[0-9]{4}"
-                                            control={Input}
-                                            // onInput={handleInput()}
-                                        // value
-                                        />
-                                    </Form.Group>
-                                    <Message inverted negative size='tiny' hidden={errorr}
-                                        content="Incorrect OTP, Please check and try again"
+                            </Form>
+                        </Container>)}
+                </Transition.Group>
+                <Transition.Group animation="fly down" duration="500">
+                    {visThree && (
+                        <Container fluid id="cont">
+                            <Form>
+                                <Form.Group widths="equal">
+                                    <Form.Field
+                                        label="Mobile Number"
+                                        value={phonenumber}
+                                        readOnly
+                                        control={Input}
                                     />
-                                    <Button positive fluid type='submit' onClick={this.handleSubmit}>
-                                        Sign Up
+                                </Form.Group>
+                                <Form.Group widths='equal'>
+                                    <Form.Field
+                                        label="Enter OTP"
+                                        placeholder='Enter OTP'
+                                        type="text"
+                                        pattern="[0-9]{4}"
+                                        control={Input}
+                                        onInput={(e) => this.handleInput(e)}
+                                    />
+                                </Form.Group>
+                                <Message negative size='tiny' hidden={errorr}
+                                    content="Incorrect OTP, Please check and try again"
+                                />
+                                <Button positive fluid type='submit' onClick={(e) => this.handleSubmit(e)}>
+                                    Sign Up
                                     </Button>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <br />
-                                        <Link>Resend OTP</Link>
-                                        <br />
-                                        <Link>Change mobile number</Link>
-                                    </div>
+                                <div style={{ textAlign: 'right' }}>
+                                    <br />
+                                    <Link>Resend OTP</Link>
+                                    <br />
+                                    <Link onClick={(e) => { this.ChangeNumber(e) }}>Change mobile number</Link>
                                 </div>
                             </Form>
-
-                        </Container>)}
+                        </Container>
+                    )}
                 </Transition.Group>
                 <Transition.Group animation="fly left" duration="500">
                     {visTwo && (
@@ -118,9 +177,10 @@ class OtpVer extends Component {
                                         label="Enter your name"
                                         required
                                         type="text"
-                                        pattern="[A-Za-z]"
+                                        // pattern="[A-Z][a-z]"
                                         placeholder='Your Name'
                                         control={Input}
+                                        onInput = {(e)=>{this.UserName(e)}}
                                     // width={16}
                                     />
                                 </Form.Group>
@@ -138,7 +198,7 @@ class OtpVer extends Component {
                         </Container>
                     )}
                 </Transition.Group>
-                
+
             </Router>
             </div>
         );
@@ -146,5 +206,3 @@ class OtpVer extends Component {
 }
 
 export default OtpVer;
-
-// https://spread.epub.pub/epub/606018ea118a7848009f45c0
