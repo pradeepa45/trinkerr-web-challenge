@@ -1,3 +1,13 @@
-import React, {Component} from 'react';
+import {Header} from 'semantic-ui-react'
 
-export default Home extends
+function Home(props){
+    return(
+        <div>
+            <Header>
+                Welcome, {props.name}
+            </Header>
+        </div>
+    )
+}
+
+export default Home;
