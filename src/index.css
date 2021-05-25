@@ -15,9 +15,10 @@ code {
 
 #root{
   background-image: url('sakura.png');
-  background-position: fixed;
+  background-size: cover;
   width: 100%;
   height: 100vh;
+  background-repeat: no-repeat;
 }
 
 #otp-ver{
@@ -26,14 +27,21 @@ code {
 
 #cont{
   /* float: right; */
-  background-color: #fff3ee;
+  /* background-color: white; */
   padding: 40px;
-  width: fit-content;
+  width: max-content;
 }
 
 #myForm{
   /* padding: 0 25%; */
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 
 @media screen and (max-width: 600px){
   #root{

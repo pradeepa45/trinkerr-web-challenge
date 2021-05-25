@@ -1,11 +1,16 @@
 import OtpVer from "./OtpVer";
+import Home from './HomePage'
+import { BrowserRouter, Route } from "react-router-dom";
+import NotFound from "./NotFound";
+
 
 function App() {
   return (
     <div>
-      <div id="otp-ver">
-      <OtpVer />
-      </div>
+      <BrowserRouter>
+        <OtpVer />
+        
+      </BrowserRouter>
     </div>
   );
 }
