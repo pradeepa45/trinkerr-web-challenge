@@ -7,14 +7,14 @@ class NotFound extends Component{
     render(){
         return(
             <div>
-                <Container style={{paddingTop:"10%"}}>
+                <Container style={{paddingTop:"13%"}}>
                    <Grid>
                        <Grid.Row centered stackable columns={2}>
                            <Grid.Column>
                            <img src ={ErrorImg} alt="Not Found"></img>
                            </Grid.Column>
                            <Grid.Column verticalAlign='middle' >
-                               <Container>
+                               <Container style={{paddingTop: "15%"}}>
                                <Message error>
                                    <Message.Header>Oops!</Message.Header>
                                    <Message.Content>Looks like you are lost</Message.Content>

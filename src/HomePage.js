@@ -1,68 +1,67 @@
-import { Carousel, Modal } from 'react-bootstrap'
+// import { Carousel, Modal } from 'react-bootstrap'
 import { Button, Container, Grid } from 'semantic-ui-react'
-import { useState } from 'react'
+import React,{ useState, useMemo } from 'react'
+import TinderCard from 'react-tinder-card'
+
+// ...
+
+const db = [
+    {
+        name: 'One',
+        url: 'http://getdrawings.com/free-icon-bw/one-icon-3.png'
+    },
+    {
+        name: 'Two',
+        url: 'http://getdrawings.com/free-icon-bw/free-shirt-icon-9.png'
+    },
+    {
+        name: 'Three',
+        url: 'http://getdrawings.com/free-icon-bw/serial-number-icon-19.png'
+    },
+    {
+        name: 'Four',
+        url: 'http://getdrawings.com/free-icon-bw/serial-number-icon-18.png'
+    },
+    {
+        name: 'Five',
+        url: 'http://getdrawings.com/free-icon-bw/number-one-icon-17.png'
+    }
+]
+
+const alreadyRemoved = []
+let charactersState = db
 
 function Home(props) {
-    // const imgs = [
-    //     "http://getdrawings.com/get-icon#one-icon-3.png",
-    //     "http://getdrawings.com/get-icon#free-shirt-icon-9.png",
-    //     "http://getdrawings.com/get-icon#serial-number-icon-19.png",
-    //     "http://getdrawings.com/get-icon#serial-number-icon-18.png",
-    //     "http://getdrawings.com/get-icon#number-one-icon-17.png"
-    // ]
     const username = localStorage.getItem("username");
 
-    const [showOne, setShowOne] = useState(false);
-    // const handleShowOne = () => setShowOne(true);
-    const handleCloseOne = () => setShowOne(false);
+    const [characters, setCharacters] = useState(db)
+    const [lastDirection, setLastDirection] = useState()
 
-    const [showTwo, setShowTwo] = useState(false);
-    // const handleShowTwo = () => setShowOne(true);
-    const handleCloseTwo = () => setShowTwo(false);
+    const childRefs = useMemo(() => Array(db.length).fill(0).map(i => React.createRef()), [])
 
-    const [last, setLast] = useState(false);
-    const handleLast = () => setLast(true);
-    const handleCloseLast = () => setLast(false);
+    const swiped = (direction, nameToDelete) => {
+        console.log('removing: ' + nameToDelete)
+        setLastDirection(direction)
+        alreadyRemoved.push(nameToDelete)
+    }
 
-    const handleDirection = (e,d) =>{
-        if(d === "left"){
-           setShowTwo(true);
-           if(e===0){
-               localStorage.setItem("One","Selected")
-           }
-           else if(e===1){
-            localStorage.setItem("Two","Selected")
-            }
-            else if(e===2){
-                localStorage.setItem("Three","Selected")
-            }
-            else if(e===3){
-                localStorage.setItem("Four","Selected")
-            }
-            else if(e===4){
-                localStorage.setItem("Five","Selected")
-            }
-        }
-        else if(d === "right"){
-            setShowOne(true);
-            console.log(e);
-            if(e===0){
-                localStorage.setItem("One","Rejected")
-            }
-            else if(e===1){
-             localStorage.setItem("Two","Rejected")
-             }
-             else if(e===2){
-                 localStorage.setItem("Three","Rejected")
-             }
-             else if(e===3){
-                 localStorage.setItem("Four","Rejected")
-             }
-             else if(e===4){
-                 localStorage.setItem("Five","Rejected")
-             }
+    const outOfFrame = (name) => {
+        console.log(name + ' left the screen!')
+        charactersState = charactersState.filter(character => character.name !== name)
+        setCharacters(charactersState)
+    }
+
+    const swipe = (dir) => {
+        const cardsLeft = characters.filter(person => !alreadyRemoved.includes(person.name))
+        if (cardsLeft.length) {
+            const toBeRemoved = cardsLeft[cardsLeft.length - 1].name // Find the card object to be removed
+            const index = db.map(person => person.name).indexOf(toBeRemoved) // Find the index of which to make the reference to
+            alreadyRemoved.push(toBeRemoved) // Make sure the next card gets removed next time if this card do not have time to exit the screen
+            childRefs[index].current.swipe(dir) // Swipe the card!
         }
     }
+
+    var ratingDone : "block"
     return (
         <div>
 
@@ -70,43 +69,35 @@ function Home(props) {
                 <Container fluid id="header-bar">
                     <h3>
                         Welcome, {username}
-                        
+
                     </h3>
 
                 </Container>
-                <Container >
+                <Container style={{paddingTop: "10%"}}>
                     <Grid centered>
                         <Grid.Row>
-                        
+                            <div style={{display: {ratingDone}}}>
+                                <div className='cardContainer'>
+                                    {characters.map((character, index) =>
+                                        <TinderCard ref={childRefs[index]} className='swipe' key={character.name} onSwipe={(dir) => swiped(dir, character.name)} onCardLeftScreen={() => outOfFrame(character.name)}>
+                                            <div style={{ backgroundImage: 'url(' + character.url + ')' }} className='card'>
+                                                <h3>{character.name}</h3>
+                                            </div>
+                                        </TinderCard>
+                                    )}
+                                </div>
+                                <div style={{display: 'flex'}}>
+                                    <Button negative fluid onClick={() => swipe('left')}>Reject</Button>
+                                    <Button positive fluid onClick={() => swipe('right')}>Select</Button>
+                                </div>
+                                {lastDirection ? <h2 key={lastDirection} className='infoText'>{username}, you swiped {lastDirection}</h2> : <h2 className='infoText'>Swipe a card or press a button to get started!</h2>}
+                            </div>
                         </Grid.Row>
-                        </Grid>
-                    <Modal show={showOne} onHide={handleCloseOne} >
-                        <Modal.Header closeButton>
-                            <Modal.Title>Hey {username},</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>You've Selected image {props.title}</Modal.Body>
-                        <Modal.Footer>
-                        </Modal.Footer>
-                    </Modal>
-                    <Modal show={showTwo} onHide={handleCloseTwo} >
-                        <Modal.Header closeButton>
-                            <Modal.Title>Hey {username},</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>You've selected image {props.title}</Modal.Body>
-                        <Modal.Footer>
-                        </Modal.Footer>
-                    </Modal>
-                    <Modal show={last} onHide={handleCloseLast} >
-                        <Modal.Header closeButton>
-                            <Modal.Title>Thank You</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>You've rated all images</Modal.Body>
-                        <Modal.Footer>
-                        </Modal.Footer>
-                    </Modal>
+                    </Grid>
+
                 </Container>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
 
