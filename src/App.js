@@ -1,18 +1,26 @@
 import OtpVer from "./OtpVer";
 import Home from './HomePage'
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import NotFound from "./NotFound";
+import { Component } from "react";
 
-
-function App() {
+class App extends Component{
+  // const 
+  render(){
+  var loggedIn = localStorage.getItem("loggedIn");
   return (
     <div>
       <BrowserRouter>
-        <OtpVer />
-        {/* <Home /> */}
+       <Switch>
+       <Route exact path="/" component={OtpVer} />
+        <Route exact path="/home" >
+          {loggedIn ? <Home /> : <OtpVer />}
+        </Route>
+        <Route exact path='/*' component={NotFound} />
+       </Switch>
       </BrowserRouter>
     </div>
-  );
+  );}
 }
 
 export default App;
