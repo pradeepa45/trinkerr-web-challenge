@@ -4,6 +4,7 @@ import { BrowserRouter, Link } from 'react-router-dom'
 import Name from './undraw_Detailed_information_re_qmuc.svg'
 import MNumber from './undraw_Mobile_apps_re_3wjf.svg'
 import Otp from './undraw_message_sent_1030.svg'
+import Home from './HomePage'
 
 class OtpVer extends Component {
     state = {
@@ -18,6 +19,7 @@ class OtpVer extends Component {
 
     componentDidMount() {
         localStorage.clear();
+        localStorage.setItem("loggedIn",false);
     }
 
     NumberInput = (val) => {
@@ -102,12 +104,17 @@ class OtpVer extends Component {
 
     render() {
         const { errorr, visOne, visTwo, visThree, phonenumber } = this.state
-
+        const loggedIn = localStorage.getItem("loggedIn");
         return (
             <div id="otp-ver">
-                <BrowserRouter>
-
-                    <Transition.Group animation="fly right" duration="500">
+                <header id="header-bar">
+                    <h1>Pictorator</h1>
+                </header>
+                    <div>
+                        <Transition.Group animation="scale" duration="500">
+                            {loggedIn && (
+                                <div>
+                                    <Transition.Group animation="fly right" duration="500">
                         {visOne && (
                             <Container id="cont">
                                 <Grid centered stackable columns={2}>
@@ -207,11 +214,11 @@ class OtpVer extends Component {
                                         <img src={Name} alt="" />
                                         </Grid.Column>
                                         <Grid.Column width={5}>
-                                        <h3>Hello there!</h3>
+                                        <h3>One last step...</h3>
                                 <Form onSubmit={(e) => { this.UserName(e); }}>
                                     <Form.Group widths="equal">
                                         <Form.Field
-                                            label="Enter your name"
+                                            label="What's your name?"
                                             required
                                             type="text"
                                             // pattern="[A-Z][a-z]"
@@ -238,7 +245,18 @@ class OtpVer extends Component {
                             </Container>
                         )}
                     </Transition.Group>
-                </BrowserRouter>
+                        
+                                </div>
+                            )}
+                        </Transition.Group>
+                    </div>
+                    {/* <div>
+                        <Transition.Group>
+                            {loggedIn && (
+                                <Home name={localStorage.getItem("username")} />
+                            ) }
+                        </Transition.Group>
+                    </div> */}
             </div>
         );
     }

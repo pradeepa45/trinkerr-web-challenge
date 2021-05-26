@@ -8,11 +8,6 @@ body {
   
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
 #root{
   background-image: url('sakura.png');
   background-size: cover;
@@ -47,4 +42,14 @@ input::-webkit-inner-spin-button {
   #root{
     padding: auto;
   }
+}
+
+#header-bar{
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 20px;
+  background-color: #6B0062;
+  color: white;
+  font-family: cursive;
 }

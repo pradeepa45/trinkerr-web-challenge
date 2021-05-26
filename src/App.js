@@ -9,7 +9,7 @@ function App() {
     <div>
       <BrowserRouter>
         <OtpVer />
-        
+        {/* <Home /> */}
       </BrowserRouter>
     </div>
   );
