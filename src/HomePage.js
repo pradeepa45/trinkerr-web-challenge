@@ -1,28 +1,35 @@
-import { Button, Container, Grid, Table, Transition, Header } from 'semantic-ui-react'
+import { Button, Container, Grid, Table, Transition, Header, Menu, Icon } from 'semantic-ui-react'
 import React, { useState, useMemo, useEffect } from 'react'
 import TinderCard from 'react-tinder-card'
-import { withRouter} from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
+import ArrowKeysReact from 'arrow-keys-react';
+
 
 const db = [
     {
         name: 'Five',
-        url: 'http://getdrawings.com/free-icon-bw/number-one-icon-17.png'
+        url: 'http://getdrawings.com/free-icon-bw/number-one-icon-17.png',
+        color: '#9789BE'
     },
     {
         name: 'Four',
-        url: 'http://getdrawings.com/free-icon-bw/serial-number-icon-18.png'
+        url: 'http://getdrawings.com/free-icon-bw/serial-number-icon-18.png',
+        color: '#AC8BB8'
     },
     {
         name: 'Three',
-        url: 'http://getdrawings.com/free-icon-bw/serial-number-icon-19.png'
+        url: 'http://getdrawings.com/free-icon-bw/serial-number-icon-19.png',
+        color: '89BDE1'
     },
     {
         name: 'Two',
-        url: 'http://getdrawings.com/free-icon-bw/free-shirt-icon-9.png'
+        url: 'http://getdrawings.com/free-icon-bw/free-shirt-icon-9.png',
+        color: '#7155AC'
     },
     {
         name: 'One',
-        url: 'http://getdrawings.com/free-icon-bw/one-icon-3.png'
+        url: 'http://getdrawings.com/free-icon-bw/one-icon-3.png',
+        color: '#604D93'
     }
 ]
 
@@ -30,7 +37,7 @@ const alreadyRemoved = []
 let charactersState = db
 var removed = []
 
-if (localStorage.key("Five")) {
+if (localStorage.length === 8) {
     removed = ["One", "Two", "Three", "Four", "Five"]
 }
 
@@ -43,15 +50,15 @@ function Home() {
     const [rating, setRating] = useState(true);
     const [final, setFinal] = useState(false);
 
-    useEffect(()=>{
+    useEffect(() => {
         if (alreadyRemoved.length === db.length || localStorage.length === 8) {
             setRating(false);
             setFinal(true);
         }
-    },[])
+    }, [])
 
-    useEffect(()=>{
-        if(removed.length === 5){
+    useEffect(() => {
+        if (removed.length === 5) {
             setRating(false);
             setFinal(true);
         }
@@ -66,7 +73,7 @@ function Home() {
         setName(nameToDelete);
         removed.push(nameToDelete);
         alreadyRemoved.push(nameToDelete);
-        
+
     }
 
     const outOfFrame = (name) => {
@@ -85,70 +92,90 @@ function Home() {
         }
     }
 
-    const handleLogout = () =>{
+    const handleLogout = () => {
         localStorage.clear();
         window.history.go(0)
-    }   
+    }
+
+    ArrowKeysReact.config({
+        // left: () => {
+        //     swipe('left')
+        // },
+        // right: () => {
+        //     swipe('right')
+        // }
+    })
 
     return (
         <div>
             <div>
-                <Container fluid id="header-bar">
+                <Menu id="header-bar">
                     <h3>
                         Welcome, {username}
                     </h3>
-                </Container>
-                <Container>
+                </Menu>
+                <Container textAlign='center'>
                     <Transition.Group animation="scale" duration="500">
-                        <Grid centered stackable>
+                        <Grid centered verticalAlign='middle' >
                             {rating && (
-                                <Container>
+                                <React.Fragment>
                                     <Grid.Row>
-                                        <Grid.Column>
-                                            <div className='cardContainer'>
-                                                {characters.map((character, index) =>
-                                                    <TinderCard ref={childRefs[index]} className='swipe' key={character.name} onSwipe={(dir) => swiped(dir, character.name)} onCardLeftScreen={() => outOfFrame(character.name)} preventSwipe={["up", "down"]}>
-                                                        <div style={{ backgroundImage: 'url(' + character.url + ')' }} className='card'>
-                                                            <h3>{character.name}</h3>
-                                                        </div>
-                                                    </TinderCard>
-                                                )}
-                                            </div>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                    <Grid.Row>
-                                        <Grid.Column ><Button negative onClick={() => swipe('left')}>Reject</Button></Grid.Column>
-                                        <Grid.Column ><Button positive onClick={() => swipe('right')}>Select</Button>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                    <Grid.Row>
-                                        <Grid.Column>
                                             {lastDirection ?
-                                                <Container >
-                                                    <h4 className='infotext'>Hey {username}</h4>
-                                                    <p className='infotext'>
-                                                        You have {(lastDirection === 'right' ? "selected" : "rejected")} image {currentName}
-                                                    </p>
+                                                <Container className="infoText">
+                                                    <h3>Hey {username}, you have {(lastDirection === 'right' ? "selected" : "rejected")} image {currentName}
+                                                    </h3>
                                                 </Container>
                                                 :
                                                 <Container>
                                                     <h2 className='infoText'>Swipe a card or press a button to get started!</h2>
                                                 </Container>}
+                                    </Grid.Row>
+                                    <Grid.Row>
+                                            <div className='cardContainer'>
+                                                {characters.map((character, index) =>
+                                                    <TinderCard
+                                                        {...ArrowKeysReact.events}
+                                                        ref={childRefs[index]}
+                                                        className='swipe'
+                                                        key={character.name}
+                                                        onSwipe={(dir) => swiped(dir, character.name)}
+                                                        onCardLeftScreen={() => outOfFrame(character.name)}
+                                                        preventSwipe={["up", "down"]}>
+                                                        <div style={{ backgroundColor: character.color }}>
+                                                            <div style={{ backgroundImage: 'url(' + character.url + ')' }} className='card'>
+                                                                {/* <h3>{character.name}</h3> */}
+                                                            </div>
+                                                        </div>
+                                                    </TinderCard>
+                                                )}
+                                            </div>
+                                    </Grid.Row>
+                                    <Grid.Row>
+                                        <Grid.Column >
+                                            <Button circular size='small' inverted color='red' onClick={() => swipe('left')}>
+                                                <Icon className='angle left' fitted></Icon>
+                                            </Button>
+                                        </Grid.Column>
+                                        <Grid.Column >
+                                            <Button circular size='small' inverted color='green' onClick={() => swipe('right')}>
+                                                <Icon className='angle right' fitted></Icon>
+                                            </Button>
                                         </Grid.Column>
                                     </Grid.Row>
-                                </Container>
+
+                                </React.Fragment>
                             )}
                         </Grid>
                     </Transition.Group>
-                    <Transition.Group animation="scale" duration="500">
+                    <Transition.Group animation="zoom" duration="500">
                         {final && (
-                            <Container>
-                                <Grid centered>
+                            <Container >
+                                <Grid centered verticalAlign='middle'>
                                     <Grid.Row>
-                                        <Grid.Column width={5}>
-                                            <Header>
+                                        <Grid.Column>
+                                            <Header style={{textAlign : "center"}} inverted>
                                                 <Header.Content>
-                                                    {username}, You have rated all the Images
+                                                    Thank you {username}, You have rated all the Images
                                                 </Header.Content>
                                             </Header>
                                             <Table celled>
@@ -160,7 +187,11 @@ function Home() {
                                                 </Table.Header>
                                                 <Table.Body>
                                                     {removed.map((el) =>
-                                                        <Table.Row key={el} negative={(localStorage.getItem(el) === 'left' ? true : false)}>
+                                                        <Table.Row
+                                                            key={el}
+                                                            negative={(localStorage.getItem(el) === 'left' ? true : false)}
+                                                            positive={(localStorage.getItem(el) === 'right' ? true : false)}
+                                                        >
                                                             <Table.Cell>{el}</Table.Cell>
                                                             <Table.Cell>{localStorage.getItem(el) === 'left' ? "rejected" : "selected"}</Table.Cell>
                                                         </Table.Row>
@@ -169,7 +200,7 @@ function Home() {
                                         </Grid.Column>
                                     </Grid.Row>
                                     <Grid.Row>
-                                        <Button onClick={handleLogout}>Log Out Instead</Button>
+                                        <Button onClick={handleLogout}>Log Out</Button>
                                     </Grid.Row>
                                 </Grid>
                             </Container>

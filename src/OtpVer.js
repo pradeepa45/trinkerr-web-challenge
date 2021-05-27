@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Icon, Container, Message, Transition, Grid } from 'semantic-ui-react'
+import { Form, Input, Button, Icon, Container, Message, Transition, Grid, Menu } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import Home from './HomePage'
 import Name from './undraw_Detailed_information_re_qmuc.svg'
@@ -16,8 +16,8 @@ class OtpVer extends Component {
         phonenumber: '', //to store the phonenumber for current session
         username: '', //to store the username for the current session
         loggedIn: false,
-        partOne : true,
-        partTwo : false
+        partOne: true,
+        partTwo: false
     }
 
     NumberInput = (val) => {
@@ -97,26 +97,27 @@ class OtpVer extends Component {
                 () => {
                     this.setState({
                         loggedIn: true,
-                        partOne : false
-                    },()=>{
+                        partOne: false
+                    }, () => {
                         this.setState({
-                            partTwo : true
+                            partTwo: true
                         })
                     })
                 })
         })
     }
-    LogOut = () =>{
+
+    LogOut = () => {
         this.setState({
-            partTwo : false
-        },()=>{
+            partTwo: false
+        }, () => {
             localStorage.clear();
             this.setState({
-                partOne : true
+                partOne: true
             })
         })
     }
-
+    
     render() {
         const { errorr, visOne, visTwo, visThree, phonenumber, partOne, partTwo } = this.state
         return (
@@ -127,12 +128,13 @@ class OtpVer extends Component {
                         <Transition.Group animation="scale" duration="500">
                             {partOne && (
                                 <div>
+                                    <Menu id="header-bar">
+                                        <h3>Pictorator</h3>
+                                    </Menu>
                                     <Transition.Group animation="fly right" duration="500">
                                         {visOne && (
                                             <div>
-                                                <header id="header-bar">
-                                                    <h3>Pictorator</h3>
-                                                </header>
+
                                                 <Container id="cont">
                                                     <Grid centered stackable columns={2}>
                                                         <Grid.Row>
@@ -202,7 +204,7 @@ class OtpVer extends Component {
                                                                     <Form.Field
                                                                         label="Enter OTP"
                                                                         placeholder='Enter OTP'
-                                                                        type="text"
+                                                                        type="password"
                                                                         pattern="[0-9]{4}"
                                                                         control={Input}
                                                                         onInput={(e) => this.handleInput(e)}
