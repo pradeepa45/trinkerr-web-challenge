@@ -1,6 +1,6 @@
 import OtpVer from "./OtpVer";
 import Home from './HomePage'
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch, withRouter } from "react-router-dom";
 import NotFound from "./NotFound";
 import { Component } from "react";
 
@@ -23,4 +23,4 @@ class App extends Component{
   );}
 }
 
-export default App;
+export default (App);

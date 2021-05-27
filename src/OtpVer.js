@@ -50,11 +50,7 @@ class OtpVer extends Component {
         // console.log(e);
         this.setState({
             otp: e.target.value
-        }
-            // ,()=>{
-            //     console.log(this.state);
-            // }
-        )
+        })
     }
 
     handleSubmit = () => {
@@ -285,14 +281,9 @@ class OtpVer extends Component {
                             {partTwo && (
                                 <div>
                                     <Container>
-                                        
                                         <Home />
-                                        <Button floated='right' >
-                                            Log Out
-                                        </Button>
                                     </Container>
                                 </div>
-
                             )}
                         </Transition.Group>
                     </div>
