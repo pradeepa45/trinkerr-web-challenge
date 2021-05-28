@@ -1,8 +1,7 @@
 import { Button, Container, Grid, Table, Transition, Header, Menu, Icon } from 'semantic-ui-react'
 import React, { useState, useMemo, useEffect } from 'react'
-import TinderCard from 'react-tinder-card'
-import { withRouter } from 'react-router-dom'
-import ArrowKeysReact from 'arrow-keys-react';
+import TinderCard from 'react-tinder-card';
+import { withRouter } from 'react-router-dom';
 
 
 const db = [
@@ -57,11 +56,23 @@ function Home() {
         }
     }, [])
 
+    
+
     useEffect(() => {
         if (removed.length === 5) {
             setRating(false);
             setFinal(true);
         }
+        const handleArrowKeys = (keys) =>{
+            if(keys === 'ArrowRight'){
+                swipe('right');
+            }
+            else if(keys === 'ArrowLeft'){
+                swipe('left');
+            }
+        }
+        window.addEventListener('keydown',event=>{handleArrowKeys(event.key)})
+        console.log("use effect in use")
     })
 
     const childRefs = useMemo(() => Array(db.length).fill(0).map(i => React.createRef()), [])
@@ -75,6 +86,8 @@ function Home() {
         alreadyRemoved.push(nameToDelete);
 
     }
+
+    
 
     const outOfFrame = (name) => {
         console.log(name + ' left the screen!');
@@ -90,21 +103,13 @@ function Home() {
             alreadyRemoved.push(toBeRemoved) // Make sure the next card gets removed next time if this card do not have time to exit the screen
             childRefs[index].current.swipe(dir) // Swipe the card!
         }
+        
     }
 
     const handleLogout = () => {
         localStorage.clear();
         window.history.go(0)
     }
-
-    ArrowKeysReact.config({
-        // left: () => {
-        //     swipe('left')
-        // },
-        // right: () => {
-        //     swipe('right')
-        // }
-    })
 
     return (
         <div>
@@ -116,7 +121,7 @@ function Home() {
                 </Menu>
                 <Container textAlign='center'>
                     <Transition.Group animation="scale" duration="500">
-                        <Grid centered verticalAlign='middle' >
+                        <Grid centered verticalAlign='middle'>
                             {rating && (
                                 <React.Fragment>
                                     <Grid.Row>
@@ -134,7 +139,6 @@ function Home() {
                                             <div className='cardContainer'>
                                                 {characters.map((character, index) =>
                                                     <TinderCard
-                                                        {...ArrowKeysReact.events}
                                                         ref={childRefs[index]}
                                                         className='swipe'
                                                         key={character.name}
@@ -169,8 +173,8 @@ function Home() {
                     </Transition.Group>
                     <Transition.Group animation="zoom" duration="500">
                         {final && (
-                            <Container >
-                                <Grid centered verticalAlign='middle'>
+                            <Container>
+                                <Grid centered verticalAlign='middle' style={{padding: '100px'}}>
                                     <Grid.Row>
                                         <Grid.Column>
                                             <Header style={{textAlign : "center"}} inverted>
